@@ -25,19 +25,19 @@ const impactStats = [
 
 const team = [
   {
-    name: 'Aarav Kulkarni',
+    name: 'Harsh Jadhav',
     role: 'Product Lead',
     image:
       'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80',
   },
   {
-    name: 'Meera Joshi',
+    name: 'Yash Mahabale',
     role: 'Data Scientist',
     image:
       'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&w=800&q=80',
   },
   {
-    name: 'Rohan Patil',
+    name: 'Omkar GUtukade',
     role: 'Market Analyst',
     image:
       'https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=800&q=80',
