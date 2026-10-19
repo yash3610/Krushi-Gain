@@ -25,18 +25,21 @@ function getField(record, keys) {
   return '';
 }
 
-async function fetchJsonWithRetry(url, retries = 2) {
+async function fetchJsonWithRetry(url, retries = 1) {
   let lastStatus = null;
   let lastError = null;
 
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     try {
-      const response = await fetch(url);
+      const response = await fetch(url, { signal: AbortSignal.timeout(10000) });
       if (response.ok) {
         return { ok: true, payload: await response.json() };
       }
 
       lastStatus = response.status;
+      if (![408, 429, 500, 502, 503, 504].includes(response.status)) {
+        break;
+      }
     } catch (error) {
       lastError = error;
     }
@@ -198,8 +201,8 @@ const getSmartMandiFinderData = async (req, res) => {
     });
   }
 
-  const apiKey = process.env.DATA_GOV_API_KEY || DATA_GOV_DEFAULT_API_KEY;
-  const resourceId = process.env.DATA_GOV_RESOURCE_ID || DATA_GOV_DEFAULT_RESOURCE_ID;
+  const apiKey = process.env.DATA_GOV_API_KEY?.trim() || DATA_GOV_DEFAULT_API_KEY;
+  const resourceId = process.env.DATA_GOV_RESOURCE_ID?.trim() || DATA_GOV_DEFAULT_RESOURCE_ID;
 
   if (apiKey === 'YOUR_API_KEY' || resourceId === 'RESOURCE_ID') {
     return res.status(500).json({
@@ -224,10 +227,10 @@ const getSmartMandiFinderData = async (req, res) => {
       });
 
       const endpoint = `https://api.data.gov.in/resource/${resourceId}?${query.toString()}`;
-      const upstream = await fetchJsonWithRetry(endpoint, 2);
+      const upstream = await fetchJsonWithRetry(endpoint);
 
       if (!upstream.ok) {
-        if (cacheEntry) {
+        if (cacheEntry && upstream.status !== 401 && upstream.status !== 403) {
           return res.status(200).json({
             ...cacheEntry.data,
             cached: true,
@@ -237,8 +240,11 @@ const getSmartMandiFinderData = async (req, res) => {
 
         return res.status(502).json({
           success: false,
-          message: `Upstream API failed with status ${upstream.status || 504}.`,
-          error: upstream.error ? upstream.error.message : undefined,
+          message: [401, 403].includes(upstream.status)
+            ? 'Mandi API key was rejected. Configure a valid DATA_GOV_API_KEY in backend/.env and restart the backend.'
+            : upstream.status === 404
+              ? 'Mandi dataset was not found. Check DATA_GOV_RESOURCE_ID in backend/.env.'
+              : 'Government mandi service is temporarily unavailable or timed out. Please try again shortly.',
         });
       }
 
