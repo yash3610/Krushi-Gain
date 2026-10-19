@@ -1,3 +1,5 @@
+import LanguageSwitcher from './LanguageSwitcher';
+import { useLanguage } from '../i18n/LanguageContext';
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 
@@ -10,6 +12,7 @@ const sidebarMenu = [
 ];
 
 const DashboardLayout = () => {
+  const { t } = useLanguage();
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -26,16 +29,14 @@ const DashboardLayout = () => {
             <Link
               to="/"
               className="inline-flex rounded-md text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300 transition hover:text-emerald-200"
-            >
-              KG
-            </Link>
-            <h2 className="mt-2 text-xl font-bold">Krushi Gain Dashboard</h2>
-            <p className="mt-1 text-sm text-slate-300">Smart mandi intelligence</p>
+            >{t("KG")}</Link>
+            <h2 className="mt-2 text-xl font-bold">{t("Krushi Gain Dashboard")}</h2>
+            <p className="mt-1 text-sm text-slate-300">{t("Smart mandi intelligence")}</p>
           </div>
 
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4">
-            <p className="text-xs text-slate-400">Logged in as</p>
-            <p className="mt-1 text-sm font-semibold text-white">{user?.name || 'Farmer'}</p>
+            <p className="text-xs text-slate-400">{t("Logged in as")}</p>
+            <p className="mt-1 text-sm font-semibold text-white">{user?.name || t('Farmer')}</p>
             <p className="text-xs text-slate-300">{user?.email || 'user@krushigain.app'}</p>
           </div>
 
@@ -53,7 +54,7 @@ const DashboardLayout = () => {
                   }`
                 }
               >
-                {item.label}
+                {t(item.label)}
               </NavLink>
             ))}
           </nav>
@@ -61,9 +62,7 @@ const DashboardLayout = () => {
           <button
             onClick={handleLogout}
             className="w-full rounded-xl border border-red-300/30 px-4 py-3 text-sm font-semibold text-red-200 transition hover:bg-red-400/10"
-          >
-            Logout
-          </button>
+          >{t("Logout")}</button>
         </aside>
 
         <div className="min-w-0 flex-1">
@@ -74,18 +73,14 @@ const DashboardLayout = () => {
                   <Link
                     to="/"
                     className="inline-flex rounded-md text-xs font-semibold uppercase tracking-[0.2em] text-emerald-300 transition hover:text-emerald-200"
-                  >
-                    KG
-                  </Link>
-                  <p className="mt-1 text-sm font-semibold text-white">{user?.name || 'Farmer'}</p>
+                  >{t("KG")}</Link>
+                  <p className="mt-1 text-sm font-semibold text-white">{user?.name || t('Farmer')}</p>
                   <p className="text-xs text-slate-300">{user?.email || 'user@krushigain.app'}</p>
                 </div>
                 <button
                   onClick={handleLogout}
                   className="rounded-xl border border-red-300/30 px-3 py-2 text-xs font-semibold text-red-200 transition hover:bg-red-400/10"
-                >
-                  Logout
-                </button>
+                >{t("Logout")}</button>
               </div>
             </div>
 
@@ -101,7 +96,7 @@ const DashboardLayout = () => {
                     }`
                   }
                 >
-                  {item.label}
+                  {t(item.label)}
                 </NavLink>
               ))}
             </nav>
@@ -110,12 +105,11 @@ const DashboardLayout = () => {
           <header className="mb-4 rounded-2xl border border-white/15 bg-white/10 px-5 py-4 shadow-glass backdrop-blur-xl md:px-6">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-xs uppercase tracking-[0.16em] text-slate-300">Overview</p>
-                <h1 className="text-xl font-bold text-white">Profit Command Center</h1>
+                <p className="text-xs uppercase tracking-[0.16em] text-slate-300">{t("Overview")}</p>
+                <h1 className="text-xl font-bold text-white">{t("Profit Command Center")}</h1>
               </div>
-              <div className="rounded-xl border border-emerald-300/30 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-200">
-                Today&apos;s market window is active
-              </div>
+              <LanguageSwitcher />
+              <div className="rounded-xl border border-emerald-300/30 bg-emerald-400/10 px-4 py-2 text-sm text-emerald-200">{t("Today's market window is active")}</div>
             </div>
           </header>
 

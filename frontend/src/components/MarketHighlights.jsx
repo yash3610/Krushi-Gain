@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import SectionHeading from './SectionHeading';
 
@@ -10,11 +11,12 @@ const highlightData = [
 ];
 
 const MarketHighlights = () => {
+  const { t } = useLanguage();
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
       <SectionHeading
-        title="Live Market Pulse"
-        subtitle="Track high-potential mandi opportunities and act quickly when profits peak."
+        title={t("Live Market Pulse")}
+        subtitle={t("Track high-potential mandi opportunities and act quickly when profits peak.")}
       />
 
       <div className="mt-10 grid gap-5 md:grid-cols-3">
@@ -30,19 +32,19 @@ const MarketHighlights = () => {
           >
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-xs uppercase tracking-wider text-slate-400">Top Mandi</p>
-                <h3 className="mt-1 text-xl font-semibold text-white">{item.mandi}</h3>
-                <p className="mt-1 text-sm text-slate-300">{item.crop}</p>
+                <p className="text-xs uppercase tracking-wider text-slate-400">{t("Top Mandi")}</p>
+                <h3 className="mt-1 text-xl font-semibold text-white">{t(item.mandi)}</h3>
+                <p className="mt-1 text-sm text-slate-300">{t(item.crop)}</p>
               </div>
               <span className="rounded-lg bg-emerald-400/20 px-3 py-1 text-sm font-semibold text-emerald-300">
-                {item.gain}
+                {t(item.gain)}
               </span>
             </div>
 
             <div className="mt-5">
               <div className="mb-2 flex justify-between text-xs text-slate-300">
-                <span>Profit confidence</span>
-                <span>{item.trend}%</span>
+                <span>{t("Profit confidence")}</span>
+                <span>{t(item.trend)}%</span>
               </div>
               <div className="h-2 rounded-full bg-slate-700/60">
                 <MotionDiv

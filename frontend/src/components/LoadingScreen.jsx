@@ -1,4 +1,6 @@
+import { useLanguage } from '../i18n/LanguageContext';
 const LoadingScreen = () => {
+  const { t } = useLanguage();
   return (
     <section className="animate-loader-screen fixed inset-0 z-[100] flex items-center justify-center bg-gradient-to-br from-emerald-50 via-lime-50 to-green-100 px-4">
       <div className="w-full max-w-md rounded-3xl border border-emerald-200/70 bg-white/70 p-8 text-center shadow-2xl backdrop-blur-md sm:p-10">
@@ -18,12 +20,8 @@ const LoadingScreen = () => {
           </div>
         </div>
 
-        <h1 className="text-2xl font-bold tracking-tight text-emerald-900 sm:text-3xl">
-          Krushi Gain
-        </h1>
-        <p className="mt-3 text-base font-medium text-emerald-700 sm:text-lg">
-          Analyzing Mandi Prices...
-        </p>
+        <h1 className="text-2xl font-bold tracking-tight text-emerald-900 sm:text-3xl">{t("Krushi Gain")}</h1>
+        <p className="mt-3 text-base font-medium text-emerald-700 sm:text-lg">{t("Analyzing Mandi Prices...")}</p>
       </div>
     </section>
   );

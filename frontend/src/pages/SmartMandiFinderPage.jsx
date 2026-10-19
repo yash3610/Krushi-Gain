@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { useMemo, useState } from 'react';
 import { getSmartMandis } from '../services/mandiService';
 import { sendSmartMandiResultOnWhatsApp } from '../services/whatsappService';
@@ -8,7 +9,7 @@ const INITIAL_FORM = {
   sortOption: 'high-to-low',
 };
 
-const formatPrice = (value) => `Rs ${Number(value || 0).toLocaleString('en-IN')}/quintal`;
+
 
 const sortMandis = (list, mode) => {
   const sorted = [...list];
@@ -29,6 +30,8 @@ const WhatsAppIcon = ({ className = '' }) => (
 );
 
 const SmartMandiFinderPage = () => {
+  const { t, locale } = useLanguage();
+  const formatPrice = value => `₹ ${Number(value || 0).toLocaleString(locale)}/${t('quintal')}`;
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [isLoading, setIsLoading] = useState(false);
   const [status, setStatus] = useState({ message: '', type: 'info' });
@@ -62,13 +65,14 @@ const SmartMandiFinderPage = () => {
       const mandiList = Array.isArray(data?.mandis) ? data.mandis : [];
 
       if (!mandiList.length) {
-        setStatus({ message: `No data found for ${commodity} in ${state}.`, type: 'error' });
+        setStatus({ message: 'No data found for {commodity} in {state}.', params: { commodity, state }, type: 'error' });
         return;
       }
 
       setResults(mandiList);
       setStatus({
-        message: `Showing top ${mandiList.length} mandis for ${commodity} in ${state}.`,
+        message: 'Showing top {count} mandis for {commodity} in {state}.',
+        params: { count: mandiList.length, commodity, state },
         type: 'success',
       });
     } catch (error) {
@@ -122,24 +126,20 @@ const SmartMandiFinderPage = () => {
   return (
     <section className="space-y-6 text-slate-100">
       <div className="rounded-2xl border border-emerald-300/25 bg-emerald-500/10 p-5 md:p-6">
-        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">Market Intelligence</p>
-        <h2 className="mt-2 text-2xl font-bold text-white md:text-3xl">Smart Mandi Finder</h2>
-        <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">
-          Crop name takun realtime mandi prices compare kara ani best selling option choose kara.
-        </p>
+        <p className="text-xs font-semibold uppercase tracking-[0.14em] text-emerald-300">{t("Market Intelligence")}</p>
+        <h2 className="mt-2 text-2xl font-bold text-white md:text-3xl">{t("Smart Mandi Finder")}</h2>
+        <p className="mt-2 max-w-2xl text-sm text-slate-300 md:text-base">{t("Enter a crop name, compare current mandi prices, and choose the best selling option.")}</p>
       </div>
 
       <div className="rounded-2xl border border-white/15 bg-slate-900/70 p-4 shadow-glass md:p-6">
         <form className="grid gap-4 md:grid-cols-4 md:items-end" onSubmit={handleSearch}>
           <div className="md:col-span-1">
-            <label htmlFor="commodity" className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-300">
-              Crop Name
-            </label>
+            <label htmlFor="commodity" className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-300">{t("Crop Name")}</label>
             <input
               id="commodity"
               name="commodity"
               type="text"
-              placeholder="e.g. Tomato, Onion"
+              placeholder={t("e.g. Tomato, Onion")}
               required
               value={formData.commodity}
               onChange={handleInputChange}
@@ -148,9 +148,7 @@ const SmartMandiFinderPage = () => {
           </div>
 
           <div className="md:col-span-1">
-            <label htmlFor="state" className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-300">
-              State
-            </label>
+            <label htmlFor="state" className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-300">{t("State")}</label>
             <input
               id="state"
               name="state"
@@ -163,9 +161,7 @@ const SmartMandiFinderPage = () => {
           </div>
 
           <div className="md:col-span-1">
-            <label htmlFor="sortOption" className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-300">
-              Sort By
-            </label>
+            <label htmlFor="sortOption" className="mb-2 block text-xs font-semibold uppercase tracking-[0.08em] text-slate-300">{t("Sort By")}</label>
             <select
               id="sortOption"
               name="sortOption"
@@ -173,8 +169,8 @@ const SmartMandiFinderPage = () => {
               onChange={handleInputChange}
               className="w-full rounded-xl border border-white/20 bg-slate-950/80 px-3 py-3 text-sm text-white focus:border-emerald-400 focus:outline-none"
             >
-              <option value="high-to-low">Price: High to Low</option>
-              <option value="low-to-high">Price: Low to High</option>
+              <option value="high-to-low">{t("Price: High to Low")}</option>
+              <option value="low-to-high">{t("Price: Low to High")}</option>
             </select>
           </div>
 
@@ -183,40 +179,37 @@ const SmartMandiFinderPage = () => {
             disabled={isLoading}
             className="h-[46px] rounded-xl bg-emerald-500 px-4 text-sm font-semibold text-slate-900 transition hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-70"
           >
-            {isLoading ? 'Finding...' : 'Find Best Mandi'}
+            {t(isLoading ? 'Finding...' : 'Find Best Mandi')}
           </button>
         </form>
 
-        {status.message ? (
+        {(status.message ? (
           <p
             className={`mt-3 text-sm ${
               status.type === 'error' ? 'text-red-300' : status.type === 'success' ? 'text-emerald-300' : 'text-slate-300'
             }`}
           >
-            {status.message}
+            {t(status.message, status.params)}
           </p>
-        ) : null}
+        ) : null)}
       </div>
 
-      {isLoading ? (
+      {(isLoading ? (
         <div className="flex items-center gap-3 rounded-2xl border border-white/15 bg-slate-900/60 p-4 text-sm text-slate-300">
-          <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-emerald-300/40 border-t-emerald-400" />
-          Fetching latest mandi prices...
-        </div>
-      ) : null}
+          <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-emerald-300/40 border-t-emerald-400" />{t("Fetching latest mandi prices...")}</div>
+      ) : null)}
 
-      {!!sortedResults.length && (
+      {(!!sortedResults.length && (
         <div className="space-y-4 rounded-2xl border border-white/15 bg-slate-900/60 p-4 md:p-6" aria-live="polite">
           <div className="rounded-xl border border-emerald-300/30 bg-emerald-500/10 p-4">
-            <h3 className="text-base font-semibold text-emerald-200">Top 1 Best Mandi</h3>
+            <h3 className="text-base font-semibold text-emerald-200">{t("Top 1 Best Mandi")}</h3>
             <p className="mt-1 text-sm text-slate-200">
-              <strong>{sortedResults[0].market}</strong>, {sortedResults[0].district}, {sortedResults[0].state}
-              <br />
-              Best modal price: <strong>{formatPrice(sortedResults[0].modal_price)}</strong>
+              <strong>{t(sortedResults[0].market)}</strong>, {t(sortedResults[0].district)}, {t(sortedResults[0].state)}
+              <br />{t("Best modal price:")}{' '}<strong>{formatPrice(sortedResults[0].modal_price)}</strong>
             </p>
           </div>
 
-          <h3 className="text-lg font-semibold text-white">Top 5 Best Mandis</h3>
+          <h3 className="text-lg font-semibold text-white">{t("Top 5 Best Mandis")}</h3>
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {sortedResults.map((mandi, index) => (
               <article
@@ -227,19 +220,19 @@ const SmartMandiFinderPage = () => {
                     : 'border-white/15 bg-slate-950/50 hover:border-emerald-300/25'
                 }`}
               >
-                <h4 className="text-base font-semibold text-white">{mandi.market}</h4>
+                <h4 className="text-base font-semibold text-white">{t(mandi.market)}</h4>
                 <p className="mt-1 text-xs text-slate-400">
-                  {mandi.district}, {mandi.state}
+                  {t(mandi.district)}, {t(mandi.state)}
                 </p>
                 <ul className="mt-3 space-y-1 text-sm text-slate-200">
                   <li>
-                    <strong>Min:</strong> {formatPrice(mandi.min_price)}
+                    <strong>{t("Min:")}</strong> {formatPrice(mandi.min_price)}
                   </li>
                   <li>
-                    <strong>Max:</strong> {formatPrice(mandi.max_price)}
+                    <strong>{t("Max:")}</strong> {formatPrice(mandi.max_price)}
                   </li>
                   <li>
-                    <strong>Modal:</strong> {formatPrice(mandi.modal_price)}
+                    <strong>{t("Modal:")}</strong> {formatPrice(mandi.modal_price)}
                   </li>
                 </ul>
               </article>
@@ -247,11 +240,11 @@ const SmartMandiFinderPage = () => {
           </div>
 
           <div className="rounded-xl border border-white/15 bg-slate-950/50 p-4">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-300">Price Comparison</h3>
+            <h3 className="text-sm font-semibold uppercase tracking-[0.08em] text-slate-300">{t("Price Comparison")}</h3>
             <ul className="mt-2 space-y-1 text-sm text-slate-200">
               {sortedResults.map((mandi, index) => (
                 <li key={`${mandi.market}-${index}`}>
-                  {index + 1}. {mandi.market} ({mandi.district}) - {formatPrice(mandi.modal_price)}
+                  {index + 1}. {t(mandi.market)} ({t(mandi.district)}) - {formatPrice(mandi.modal_price)}
                 </li>
               ))}
             </ul>
@@ -276,12 +269,10 @@ const SmartMandiFinderPage = () => {
               type="button"
               onClick={handleSearchAgain}
               className="h-[46px] rounded-xl border border-white/20 bg-white/5 px-4 text-sm font-medium text-slate-200 transition hover:bg-white/10"
-            >
-              Search Again
-            </button>
+            >{t("Search Again")}</button>
           </div>
         </div>
-      )}
+      ))}
     </section>
   );
 };

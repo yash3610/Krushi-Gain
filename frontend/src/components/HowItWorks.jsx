@@ -1,4 +1,7 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
+
+const MotionDiv = motion.div;
 
 const steps = [
   'Farmer selects crop and current mandi.',
@@ -9,12 +12,13 @@ const steps = [
 ];
 
 const HowItWorks = () => {
+  const { t } = useLanguage();
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
-      <h2 className="mb-8 text-center text-3xl font-bold text-white">How It Works</h2>
+      <h2 className="mb-8 text-center text-3xl font-bold text-white">{t("How It Works")}</h2>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">
         {steps.map((step, index) => (
-          <motion.div
+          <MotionDiv
             key={step}
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -26,8 +30,8 @@ const HowItWorks = () => {
             <span className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500 font-bold text-slate-900">
               {index + 1}
             </span>
-            <p className="text-sm text-slate-200">{step}</p>
-          </motion.div>
+            <p className="text-sm text-slate-200">{t(step)}</p>
+          </MotionDiv>
         ))}
       </div>
     </section>

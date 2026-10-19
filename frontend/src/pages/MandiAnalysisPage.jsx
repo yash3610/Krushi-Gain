@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { useState } from 'react';
 import {
   ResponsiveContainer,
@@ -17,14 +18,16 @@ import WhatsAppShareButton from '../components/WhatsAppShareButton';
 const crops = ['Tomato', 'Onion', 'Wheat', 'Soybean'];
 const mandis = ['Nashik', 'Pune', 'Mumbai', 'Nagpur'];
 
-const ResultCard = ({ title, value }) => (
-  <div className="rounded-xl border border-white/20 bg-slate-900/40 p-4">
-    <p className="text-sm text-slate-300">{title}</p>
-    <p className="mt-1 text-lg font-semibold text-white">{value}</p>
-  </div>
-);
+const ResultCard = ({ title, value }) => {
+  const { t } = useLanguage();
+  return (<div className="rounded-xl border border-white/20 bg-slate-900/40 p-4">
+    <p className="text-sm text-slate-300">{t(title)}</p>
+    <p className="mt-1 text-lg font-semibold text-white">{t(value)}</p>
+  </div>);
+};
 
 const MandiAnalysisPage = () => {
+  const { t } = useLanguage();
   const { user } = useAuth();
   const [formData, setFormData] = useState({
     crop: 'Tomato',
@@ -96,12 +99,12 @@ const MandiAnalysisPage = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold text-white">Mandi Analysis</h1>
-      <p className="mt-2 text-slate-200">Enter crop and mandi details to compute expected profit.</p>
+      <h1 className="text-3xl font-bold text-white">{t("Mandi Analysis")}</h1>
+      <p className="mt-2 text-slate-200">{t("Enter crop and mandi details to compute expected profit.")}</p>
 
       <form onSubmit={handleSubmit} className="mt-6 grid gap-4 md:grid-cols-2">
         <div>
-          <label className="mb-2 block text-sm text-slate-200">Crop Name</label>
+          <label className="mb-2 block text-sm text-slate-200">{t("Crop Name")}</label>
           <select
             name="crop"
             value={formData.crop}
@@ -110,14 +113,14 @@ const MandiAnalysisPage = () => {
           >
             {crops.map((crop) => (
               <option key={crop} value={crop}>
-                {crop}
+                {t(crop)}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-200">Current Mandi</label>
+          <label className="mb-2 block text-sm text-slate-200">{t("Current Mandi")}</label>
           <select
             name="currentMandi"
             value={formData.currentMandi}
@@ -126,14 +129,14 @@ const MandiAnalysisPage = () => {
           >
             {mandis.map((mandi) => (
               <option key={mandi} value={mandi}>
-                {mandi}
+                {t(mandi)}
               </option>
             ))}
           </select>
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-200">Quantity</label>
+          <label className="mb-2 block text-sm text-slate-200">{t("Quantity")}</label>
           <input
             type="number"
             min="1"
@@ -146,7 +149,7 @@ const MandiAnalysisPage = () => {
         </div>
 
         <div>
-          <label className="mb-2 block text-sm text-slate-200">Transport Cost per KM</label>
+          <label className="mb-2 block text-sm text-slate-200">{t("Transport Cost per KM")}</label>
           <input
             type="number"
             min="0"
@@ -164,25 +167,25 @@ const MandiAnalysisPage = () => {
             disabled={loading}
             className="rounded-xl bg-emerald-500 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:cursor-not-allowed disabled:opacity-70"
           >
-            {loading ? 'Analyzing...' : 'Analyze Profit'}
+            {t(loading ? 'Analyzing...' : 'Analyze Profit')}
           </button>
         </div>
       </form>
 
-      {error && <p className="mt-4 text-sm text-red-300">{error}</p>}
+      {(error && <p className="mt-4 text-sm text-red-300">{t(error)}</p>)}
 
-      {result && (
+      {(result && (
         <div className="mt-8 space-y-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <ResultCard title="Crop Name" value={formData.crop} />
-            <ResultCard title="Quantity" value={`${formData.quantity} Quintal`} />
-            <ResultCard title="Current Mandi" value={formData.currentMandi} />
-            <ResultCard title="Current Mandi Price" value={`₹ ${result.currentMandiPrice}`} />
-            <ResultCard title="Predicted Price" value={`₹ ${result.predictedPrice}`} />
-            <ResultCard title="Recommended Mandi" value={result.recommendedMandi} />
-            <ResultCard title="Distance" value={`${result.distance} km`} />
-            <ResultCard title="Transport Cost" value={`₹ ${result.transportCost}`} />
-            <ResultCard title="Expected Profit" value={`₹ ${result.expectedProfit}`} />
+            <ResultCard title={t("Crop Name")} value={formData.crop} />
+            <ResultCard title={t("Quantity")} value={`${formData.quantity} ${t('Quintal')}`} />
+            <ResultCard title={t("Current Mandi")} value={formData.currentMandi} />
+            <ResultCard title={t("Current Mandi Price")} value={`₹ ${result.currentMandiPrice}`} />
+            <ResultCard title={t("Predicted Price")} value={`₹ ${result.predictedPrice}`} />
+            <ResultCard title={t("Recommended Mandi")} value={result.recommendedMandi} />
+            <ResultCard title={t("Distance")} value={`${result.distance} ${t('km')}`} />
+            <ResultCard title={t("Transport Cost")} value={`₹ ${result.transportCost}`} />
+            <ResultCard title={t("Expected Profit")} value={`₹ ${result.expectedProfit}`} />
           </div>
 
           <WhatsAppShareButton
@@ -198,16 +201,16 @@ const MandiAnalysisPage = () => {
             <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={280}>
               <BarChart data={result.comparison}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                <XAxis dataKey="mandi" stroke="#cbd5e1" />
+                <XAxis dataKey="mandi" tickFormatter={t} stroke="#cbd5e1" />
                 <YAxis stroke="#cbd5e1" />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="netProfit" fill="#34d399" name="Net Profit" />
+                <Bar dataKey="netProfit" fill="#34d399" name={t("Net Profit")} />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };

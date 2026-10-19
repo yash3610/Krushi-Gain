@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { loginUser, sendOtpToPhone, verifyOtpAndLogin } from '../services/authService';
@@ -7,6 +8,7 @@ import LoginForm from '../components/LoginForm';
 import OTPInput from '../components/OTPInput';
 
 const LoginPage = () => {
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -112,14 +114,14 @@ const LoginPage = () => {
   return (
     <section className="mx-auto flex min-h-[80vh] w-full max-w-md items-center px-4 py-14 sm:px-0">
       <div className="w-full rounded-3xl border border-white/20 bg-white/10 p-8 shadow-glass backdrop-blur-xl">
-        <h1 className="mb-2 text-3xl font-bold text-white">Login</h1>
-        <p className="mb-6 text-sm text-slate-300">Use email/password or WhatsApp OTP</p>
+        <h1 className="mb-2 text-3xl font-bold text-white">{t("Login")}</h1>
+        <p className="mb-6 text-sm text-slate-300">{t("Use email/password or WhatsApp OTP")}</p>
 
-        {successMessage && (
+        {(successMessage && (
           <p className="mb-4 rounded-lg border border-emerald-200/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-200">
-            {successMessage}
+            {t(successMessage)}
           </p>
-        )}
+        ))}
 
         <LoginForm
           formData={emailFormData}
@@ -131,7 +133,7 @@ const LoginPage = () => {
 
         <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-widest text-slate-400">
           <span className="h-px flex-1 bg-white/20" />
-          <span>OR</span>
+          <span>{t("OR")}</span>
           <span className="h-px flex-1 bg-white/20" />
         </div>
 
@@ -139,7 +141,7 @@ const LoginPage = () => {
           <input
             type="tel"
             name="phone"
-            placeholder="Phone number (e.g. 919876543210)"
+            placeholder={t("Phone number (e.g. 919876543210)")}
             value={phone}
             onChange={(event) => setPhone(event.target.value.replace(/\D/g, ''))}
             required
@@ -149,35 +151,30 @@ const LoginPage = () => {
           <Button
             onClick={handleSendOtp}
             isLoading={sendOtpLoading}
-            loadingText="Sending OTP..."
+            loadingText={t("Sending OTP...")}
             disabled={cooldown > 0}
             className="bg-green-500 text-green-950 hover:bg-green-400"
           >
-            {otpSent ? (cooldown > 0 ? `Resend OTP in ${cooldown}s` : 'Resend OTP') : 'Send OTP'}
+            {t(otpSent ? (cooldown > 0 ? t('Resend OTP in {seconds}s', { seconds: cooldown }) : 'Resend OTP') : 'Send OTP')}
           </Button>
 
-          {otpSent && (
+          {(otpSent && (
             <>
               <OTPInput value={otp} onChange={setOtp} disabled={verifyOtpLoading} />
               <Button
                 onClick={handleVerifyOtp}
                 isLoading={verifyOtpLoading}
-                loadingText="Verifying OTP..."
+                loadingText={t("Verifying OTP...")}
                 className="bg-white text-slate-950 hover:bg-slate-100"
-              >
-                Verify OTP
-              </Button>
+              >{t("Verify OTP")}</Button>
             </>
-          )}
+          ))}
 
-          {otpError && <p className="text-sm text-red-300">{otpError}</p>}
+          {(otpError && <p className="text-sm text-red-300">{t(otpError)}</p>)}
         </div>
 
-        <p className="mt-5 text-sm text-slate-300">
-          New user?{' '}
-          <Link to="/signup" className="font-semibold text-emerald-200 hover:text-emerald-100">
-            Sign Up
-          </Link>
+        <p className="mt-5 text-sm text-slate-300">{t("New user?")}{t(' ')}
+          <Link to="/signup" className="font-semibold text-emerald-200 hover:text-emerald-100">{t("Sign Up")}</Link>
         </p>
       </div>
     </section>

@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { motion } from 'framer-motion';
 import SectionHeading from './SectionHeading';
 
@@ -22,11 +23,12 @@ const gallery = [
 ];
 
 const FarmerShowcase = () => {
+  const { t } = useLanguage();
   return (
     <section className="mx-auto w-full max-w-7xl px-4 py-24 sm:px-6 lg:px-8">
       <SectionHeading
-        title="Built for Real Farmers"
-        subtitle="From field to market, every decision is supported with live pricing and profit-focused analysis."
+        title={t("Built for Real Farmers")}
+        subtitle={t("From field to market, every decision is supported with live pricing and profit-focused analysis.")}
       />
 
       <div className="mt-12 grid gap-6 lg:grid-cols-3">
@@ -43,14 +45,14 @@ const FarmerShowcase = () => {
             <div className="h-64 overflow-hidden">
               <img
                 src={item.src}
-                alt={item.title}
+                alt={t(item.title)}
                 className="h-full w-full object-cover transition duration-500 hover:scale-110"
                 loading="lazy"
               />
             </div>
             <div className="p-5">
-              <h3 className="text-xl font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-slate-300">{item.desc}</p>
+              <h3 className="text-xl font-semibold text-white">{t(item.title)}</h3>
+              <p className="mt-2 text-sm leading-relaxed text-slate-300">{t(item.desc)}</p>
             </div>
           </MotionDiv>
         ))}

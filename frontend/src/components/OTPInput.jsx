@@ -1,4 +1,6 @@
+import { useLanguage } from '../i18n/LanguageContext';
 const OTPInput = ({ value, onChange, disabled = false }) => {
+  const { t } = useLanguage();
   const handleInputChange = (event) => {
     const sanitized = event.target.value.replace(/\D/g, '').slice(0, 6);
     onChange(sanitized);
@@ -10,7 +12,7 @@ const OTPInput = ({ value, onChange, disabled = false }) => {
       inputMode="numeric"
       pattern="[0-9]*"
       maxLength={6}
-      placeholder="Enter 6-digit OTP"
+      placeholder={t("Enter 6-digit OTP")}
       value={value}
       onChange={handleInputChange}
       disabled={disabled}

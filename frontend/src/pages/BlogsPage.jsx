@@ -1,3 +1,4 @@
+import { useLanguage } from '../i18n/LanguageContext';
 import { useEffect, useState } from 'react';
 import { getBlogs } from '../services/blogService';
 
@@ -69,6 +70,7 @@ const getPreview = (content, maxLength = 110) => {
 const getDelayClass = (index) => `fx-delay-${(index % 5) + 1}`;
 
 const BlogsPage = () => {
+  const { t, locale } = useLanguage();
   const [blogs, setBlogs] = useState(fallbackBlogs);
   const [selectedBlog, setSelectedBlog] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -129,16 +131,14 @@ const BlogsPage = () => {
         <div className="fx-reveal relative overflow-hidden rounded-[2rem]">
           <img
             src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=1800&q=80"
-            alt="Farm background for blogs page"
+            alt={t("Farm background for blogs page")}
             className="h-[250px] w-full object-cover md:h-[330px]"
           />
           <div className="absolute inset-0 bg-slate-950/45" />
           <div className="absolute inset-0 flex flex-col items-center justify-center px-4 text-center text-white">
-            <p className="inline-flex rounded-full border border-white/40 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider">
-              Our Blog
-            </p>
-            <h1 className="mt-4 text-4xl font-bold md:text-6xl">Fresh stories from the field</h1>
-            <p className="mt-3 text-sm text-white/90 md:text-base">Home / Blog</p>
+            <p className="inline-flex rounded-full border border-white/40 bg-white/10 px-4 py-1 text-xs font-semibold uppercase tracking-wider">{t("Our Blog")}</p>
+            <h1 className="mt-4 text-4xl font-bold md:text-6xl">{t("Fresh stories from the field")}</h1>
+            <p className="mt-3 text-sm text-white/90 md:text-base">{t("Home / Blog")}</p>
           </div>
         </div>
       </section>
@@ -159,10 +159,10 @@ const BlogsPage = () => {
               }}
               className={`fx-reveal ${getDelayClass(index)} fx-hover-lift fx-card-premium rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-md`}
             >
-              <img src={blog.image} alt={blog.title} className="fx-card-image h-56 w-full object-cover" />
+              <img src={blog.image} alt={t(blog.title)} className="fx-card-image h-56 w-full object-cover" />
               <div className="p-5">
-                <h2 className="text-xl font-semibold text-slate-900">{blog.title}</h2>
-                <p className="mt-3 text-sm leading-relaxed text-slate-600">{getPreview(blog.content)}</p>
+                <h2 className="text-xl font-semibold text-slate-900">{t(blog.title)}</h2>
+                <p className="mt-3 text-sm leading-relaxed text-slate-600">{getPreview(t(blog.content))}</p>
                 <button
                   type="button"
                   onClick={(event) => {
@@ -170,15 +170,13 @@ const BlogsPage = () => {
                     openBlogModal(blog);
                   }}
                   className="mt-5 w-full rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-amber-300"
-                >
-                  Read More
-                </button>
+                >{t("Read More")}</button>
               </div>
             </article>
           ))}
         </div>
 
-        {totalPages > 1 && (
+        {(totalPages > 1 && (
           <div className="fx-reveal fx-delay-2 mt-10 flex items-center justify-center gap-2">
             <button
               type="button"
@@ -203,7 +201,7 @@ const BlogsPage = () => {
                       : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-100'
                   }`}
                 >
-                  {pageNumber}
+                  {t(pageNumber)}
                 </button>
               );
             })}
@@ -216,10 +214,10 @@ const BlogsPage = () => {
               ›
             </button>
           </div>
-        )}
+        ))}
       </section>
 
-      {selectedBlog && (
+      {(selectedBlog && (
         <div
           className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-950/70 px-4 py-8"
           onClick={closeBlogModal}
@@ -230,38 +228,36 @@ const BlogsPage = () => {
           >
             <img
               src={selectedBlog.image}
-              alt={selectedBlog.title}
+              alt={t(selectedBlog.title)}
               className="h-64 w-full rounded-t-3xl object-cover md:h-80"
             />
             <div className="p-6 sm:p-8">
               <div className="flex flex-wrap items-center gap-2 text-xs font-semibold uppercase tracking-wide text-amber-700">
-                <span className="rounded-full bg-amber-100 px-3 py-1">Blog Detail</span>
+                <span className="rounded-full bg-amber-100 px-3 py-1">{t("Blog Detail")}</span>
                 {selectedBlog.author && (
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{selectedBlog.author}</span>
+                  <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{t(selectedBlog.author)}</span>
                 )}
                 {selectedBlog.createdAt && (
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">
-                    {new Date(selectedBlog.createdAt).toLocaleDateString()}
+                    {new Date(selectedBlog.createdAt).toLocaleDateString(locale)}
                   </span>
                 )}
               </div>
 
-              <h3 className="mt-5 text-3xl font-bold leading-tight text-slate-900">{selectedBlog.title}</h3>
+              <h3 className="mt-5 text-3xl font-bold leading-tight text-slate-900">{t(selectedBlog.title)}</h3>
               <p className="mt-4 whitespace-pre-line text-base leading-relaxed text-slate-700">
-                {selectedBlog.content}
+                {t(selectedBlog.content)}
               </p>
 
               <button
                 type="button"
                 onClick={closeBlogModal}
                 className="mt-7 rounded-full bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-900 transition hover:bg-amber-300"
-              >
-                Close
-              </button>
+              >{t("Close")}</button>
             </div>
           </div>
         </div>
-      )}
+      ))}
     </div>
   );
 };
